@@ -1,0 +1,45 @@
+package com.gdsc.jupgging.controller;
+
+import com.gdsc.jupgging.domain.Coordinates;
+import com.gdsc.jupgging.domain.User;
+import com.gdsc.jupgging.service.DistanceService;
+import com.gdsc.jupgging.service.FirebaseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
+
+@RestController
+@RequestMapping("/api/distance")
+public class DistanceController {
+
+    private static final Logger logger = LoggerFactory.getLogger(DistanceController.class);
+    private final DistanceService distanceService;
+    private final FirebaseService firebaseService;
+
+    @Autowired
+    public DistanceController(DistanceService distanceService, FirebaseService firebaseService) {
+        this.distanceService = distanceService;
+        this.firebaseService = firebaseService;
+    }
+
+    @PostMapping("/calculate-distance")
+    public double calculateDistance(@RequestBody Coordinates coordinates) throws IOException {
+        return distanceService.calculateDistance(coordinates);
+    }
+
+    @PostMapping("/update-distance")
+    public void saveDistance(@RequestBody User user) {
+        try {
+            firebaseService.updateUser(user);
+            logger.info("Distance data saved successfully for user with email {}", user.getEmail());
+        } catch (Exception e) {
+            logger.error("Error occurred while saving distance data: {}", e.getMessage());
+        }
+    }
+}
