@@ -4,12 +4,12 @@ import com.gdsc.jupgging.domain.User;
 
 public interface FirebaseService {
 
-    public String insertUser(User user) throws Exception;
+    public void saveUser(User user) throws Exception;
 
-    public User getUserDetail(String id) throws Exception;
+    public User getUserDetail(String email) throws Exception;
 
-    public String updateUser(User user) throws Exception;
+    public void updateUser(User user) throws Exception;
 
-    public String deleteUser(String id) throws Exception;
+    public void deleteUser(String email) throws Exception;
 
 }

@@ -1,58 +1,50 @@
 package com.gdsc.jupgging.service;
 
 import com.gdsc.jupgging.domain.User;
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FirebaseServiceImpl implements FirebaseService {
 
-    public static final String COLLECTION_NAME = "user";
+    private static final Logger logger = LoggerFactory.getLogger(FirebaseServiceImpl.class);
+    public static final String COLLECTION_NAME = "users";
+
 
     @Override
-    public String insertUser(User user) throws Exception {
+    public void saveUser(User user) throws Exception {
         Firestore firestore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> apiFuture = firestore.collection(COLLECTION_NAME)
-                .document(user.getId()).set(user);
-        return apiFuture.get().getUpdateTime().toString();
+        firestore.collection(COLLECTION_NAME).document(user.getEmail()).set(user).get();
+        logger.info("User with email {} added successfully", user.getEmail());
     }
 
     @Override
-    public User getUserDetail(String id) throws Exception {
+    public User getUserDetail(String email) throws Exception {
         Firestore firestore = FirestoreClient.getFirestore();
-        DocumentReference documentReference = firestore.collection(COLLECTION_NAME)
-                .document(id);
-        ApiFuture<DocumentSnapshot> apiFuture = documentReference.get();
-        DocumentSnapshot documentSnapshot = apiFuture.get();
+        DocumentSnapshot document = firestore.collection(COLLECTION_NAME).document(email).get().get();
 
-        User user = null;
-        if (documentSnapshot.exists()) {
-            user = documentSnapshot.toObject(User.class);
-            return user;
+        if (document.exists()) {
+            return document.toObject(User.class);
         } else {
+            logger.info("No user found with email {}", email);
             return null;
         }
     }
 
     @Override
-    public String updateUser(User user) throws Exception {
+    public void updateUser(User user) throws Exception {
         Firestore firestore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> apiFuture = firestore.collection(COLLECTION_NAME).document(user.getId())
-                .set(user);
-        return apiFuture.get().getUpdateTime().toString();
+        firestore.collection(COLLECTION_NAME).document(user.getEmail()).set(user, SetOptions.merge()).get();
+        logger.info("User with email {} updated successfully", user.getEmail());
     }
 
     @Override
-    public String deleteUser(String id) throws Exception {
+    public void deleteUser(String email) throws Exception {
         Firestore firestore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> apiFuture = firestore.collection(COLLECTION_NAME)
-                .document(id)
-                .delete();
-        return "Document id: " + id + " delete";
+        firestore.collection(COLLECTION_NAME).document(email).delete().get();
+        logger.info("User with email {} deleted successfully", email);
     }
 }

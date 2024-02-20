@@ -1,11 +1,14 @@
 package com.gdsc.jupgging.domain;
 
 public class User {
-    String id;
-    String name;
-    int age;
-    String email;
-    
+
+    private String id;
+    private String name;
+    private int age;
+    private String email;
+    private String password;
+    private double distance;
+
     public String getId() {
         return id;
     }
@@ -33,8 +36,24 @@ public class User {
     public void setAge(int age) {
         this.age = age;
     }
-    
+
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 }
