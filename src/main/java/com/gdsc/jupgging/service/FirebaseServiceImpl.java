@@ -17,19 +17,20 @@ public class FirebaseServiceImpl implements FirebaseService {
     @Override
     public void saveUser(User user) throws Exception {
         Firestore firestore = FirestoreClient.getFirestore();
-        firestore.collection(COLLECTION_NAME).document(user.getEmail()).set(user).get();
-        logger.info("User with email {} added successfully", user.getEmail());
+        firestore.collection(COLLECTION_NAME).document(user.getUid()).set(user).get();
+        logger.info("User added successfully");
     }
 
     @Override
-    public User getUserDetail(String email) throws Exception {
+    public User getUserDetail(String uid) throws Exception {
         Firestore firestore = FirestoreClient.getFirestore();
-        DocumentSnapshot document = firestore.collection(COLLECTION_NAME).document(email).get().get();
+        DocumentSnapshot document = firestore.collection(COLLECTION_NAME).document(uid).get().get();
 
         if (document.exists()) {
+            logger.info("User found");
             return document.toObject(User.class);
         } else {
-            logger.info("No user found with email {}", email);
+            logger.info("No user found");
             return null;
         }
     }
@@ -37,14 +38,15 @@ public class FirebaseServiceImpl implements FirebaseService {
     @Override
     public void updateUser(User user) throws Exception {
         Firestore firestore = FirestoreClient.getFirestore();
-        firestore.collection(COLLECTION_NAME).document(user.getEmail()).set(user, SetOptions.merge()).get();
-        logger.info("User with email {} updated successfully", user.getEmail());
+        firestore.collection(COLLECTION_NAME).document(user.getUid()).set(user, SetOptions.merge()).get();
+        logger.info("User updated successfully");
     }
 
     @Override
-    public void deleteUser(String email) throws Exception {
+    public void deleteUser(String uid) throws Exception {
         Firestore firestore = FirestoreClient.getFirestore();
-        firestore.collection(COLLECTION_NAME).document(email).delete().get();
-        logger.info("User with email {} deleted successfully", email);
+        firestore.collection(COLLECTION_NAME).document(uid).delete().get();
+        logger.info("User deleted successfully");
     }
+
 }

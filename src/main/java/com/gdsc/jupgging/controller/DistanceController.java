@@ -7,10 +7,9 @@ import com.gdsc.jupgging.service.FirebaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -40,6 +39,20 @@ public class DistanceController {
             logger.info("Distance data saved successfully for user with email {}", user.getEmail());
         } catch (Exception e) {
             logger.error("Error occurred while saving distance data: {}", e.getMessage());
+        }
+    }
+
+    @PostMapping("/user/{userId}/update-distance")
+    public ResponseEntity<?> updateUserDistance(@PathVariable String userId, @RequestBody Coordinates coordinates) {
+        try {
+            // 거리 계산
+            double distance = distanceService.calculateDistance(coordinates);
+            distanceService.updateDistance(userId, distance);
+            logger.info("Distance updated successfully");
+            return ResponseEntity.ok().body("Distance updated successfully");
+        } catch (IOException e) {
+            logger.error("Error calculating distance");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error calculating distance");
         }
     }
 }
