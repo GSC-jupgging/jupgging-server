@@ -3,7 +3,7 @@
 - Please download the frontend project of GSC-jupgging.
 
 ## Way to run project
-- To run this project, users have to add two API keys.
+- To run this backend project, users have to add two API keys.
 - Add TMap API Key in the resources.properties.
   - https://openapi.sk.com/
 - Add Firebase Admin SDK Secret Key in the serviceAccountKey.json
