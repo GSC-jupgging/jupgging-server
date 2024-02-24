@@ -1,6 +1,6 @@
 # jupgging-server
-- This repository is for the backend project of GSC-joopging.
-- Please download the frontend project of GSC-joopging
+- This repository is for the backend project of GSC-jupgging.
+- Please download the frontend project of GSC-jupgging.
 
 ## Way to run project
 - To run this project, users have to add two API keys.
